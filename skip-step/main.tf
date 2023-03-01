@@ -104,6 +104,12 @@ resource "tls_private_key" "example_ssh" {
   rsa_bits  = 4096
 }
 
+resource "local_file" "examplessh"{
+  filename="examplessh.pem"
+  content=tls_private_key.example_ssh.private_key_pem
+}
+
+
 # Create virtual machine
 resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
   name                  = "myVM"
@@ -127,12 +133,13 @@ resource "azurerm_linux_virtual_machine" "my_terraform_vm" {
 
   computer_name                   = "myvm"
   admin_username                  = "azureuser"
-  disable_password_authentication = true
+
 
   admin_ssh_key {
     username   = "azureuser"
     public_key = tls_private_key.example_ssh.public_key_openssh
   }
+  depends_on = [tls_private_key.example_ssh]
 
   boot_diagnostics {
     storage_account_uri = azurerm_storage_account.my_storage_account.primary_blob_endpoint
