@@ -8,12 +8,20 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
-
-steps:
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: |
-      # Write your commands here
-      sudo mkdir /mnt/fileshare1
-
+  
+jobs:
+  job:
+    steps:
+    - task: Bash@3
+      inputs:
+      targetType: 'inline'
+      script: |
+        # Write your commands here
+        sudo mkdir /mnt/fileshare1
+jobs:  
+- deployment: VMDeploy
+  displayName: web
+  environment:
+    name:  Linux environment
+    resourceType: VirtualMachine
+    tags: web
